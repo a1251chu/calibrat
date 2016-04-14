@@ -25,7 +25,7 @@ public class CommController implements SerialPortEventListener{
 	    private String appName;
 	    private BufferedReader input;
 	    private OutputStream output;
-	    private String getString;
+	    String getString;
 	    InputStream inputStream;
 	    private static final int TIME_OUT = 1000; // Port open timeout
 	    private static final int DATA_RATE = 9600; // Arduino serial port
@@ -35,10 +35,6 @@ public class CommController implements SerialPortEventListener{
 	        	System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyUSB0");
 	            CommPortIdentifier portId = null;
 	            Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-
-	            // Enumerate system ports and try connecting to Arduino over each
-	            //
-	            //System.out.println( "Trying:");
 	            while (portId == null && portEnum.hasMoreElements()) {
 	                // Iterate through your host computer's serial port IDs
 	                //
@@ -47,8 +43,8 @@ public class CommController implements SerialPortEventListener{
 	                    if ( currPortId.getName().equals(portName) 
 	                      || currPortId.getName().startsWith(portName)) {
 
-	                        // Try to connect to the Arduino on this port
-	                        //
+	                        // Try to connect
+
 	                        // Open serial port
 	                        serialPort = (SerialPort)currPortId.open(appName, TIME_OUT);
 	                        portId = currPortId;
@@ -73,7 +69,7 @@ public class CommController implements SerialPortEventListener{
 	            serialPort.notifyOnDataAvailable(true);
 
 	            // Give the Arduino some time
-	            try { Thread.sleep(50); } catch (InterruptedException ie) {}
+	            //try { Thread.sleep(50); } catch (InterruptedException ie) {}
 	            
 	            return true;
 	        }
@@ -83,11 +79,10 @@ public class CommController implements SerialPortEventListener{
 	        return false;
 	    }
 	    
-	    private void sendData(String data) {
+	    public void sendData(String data) {
 	        try {
-	            //System.out.println("Sending data: '" + data +"'");
+//	            System.out.println("Sending data: '" + data +"'");
 	            
-	            // open the streams and send the "y" character
 	            output = serialPort.getOutputStream();
 	            output.write( data.getBytes() );
 	        } 
@@ -110,6 +105,7 @@ public class CommController implements SerialPortEventListener{
 	    //
 	    // Handle serial port event
 	    //
+	    @Override
 	    public synchronized void serialEvent(SerialPortEvent oEvent) {
 	    	switch (oEvent.getEventType()) {
 	        case SerialPortEvent.BI:
@@ -121,89 +117,48 @@ public class CommController implements SerialPortEventListener{
 	        case SerialPortEvent.DSR:
 	        case SerialPortEvent.RI:
 	        case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-	        	System.out.println(" no connect...");
+	        	//System.out.println(" no connect...");
 	           break;
 	        case SerialPortEvent.DATA_AVAILABLE:
 	           // we get here if data has been received
 	           byte[] readBuffer = new byte[20];
 	           try {
-	              // read data
-	              while (inputStream.available() > 0) {
-	                 int numBytes = inputStream.read(readBuffer);
-	              } 
-	              // print data
-	              getString  = new String(readBuffer);
-	              System.out.println("Read: "+getString);
+	        	   if ( input == null ) {
+	                    input = new BufferedReader(
+	                        new InputStreamReader(
+	                                serialPort.getInputStream()));
+	                }
+	                String inputLine = input.readLine();
+	                getString = inputLine;
+//	                System.out.println("getData:" + getString);
+	                break;
 	           } catch (IOException e) {}
-	           System.out.println("connect...");
+	           
 	           break;
 	        }
-	       /* try {
-	            switch (oEvent.getEventType() ) {
-	                case SerialPortEvent.DATA_AVAILABLE: 
-	                    if ( input == null ) {
-	                        input = new BufferedReader(
-	                            new InputStreamReader(
-	                                    serialPort.getInputStream()));
-	                    }
-	                    String inputLine = input.readLine();
-	                    getString = inputLine;
-	                    System.out.println("serialEvent:" + inputLine);
-	                    break;
-
-	                default:
-	                    break;
-	            }
-	        } 
-	        catch (Exception e) {
-	            System.err.println(e.toString());
-	        }*/
+	    	
 	    }
 
 	    public CommController() {
 	        appName = getClass().getName();
+	        if(initialize()){
+	        	
+	        }
+	        	
 	    }
 	    
 	    public void MFCControl(String hiControlText,String lowControlText) throws Exception {
-	        CommController test = new CommController();
-	        if ( test.initialize() ) {
-	            test.sendData(hiControlText);
+	    	if(serialPort != null)
+	    	{
+	    		sendData(hiControlText);
 	            try { Thread.sleep(50); } catch (InterruptedException ie) {}
-	            test.sendData(lowControlText);
+	            sendData(lowControlText);
 	            try { Thread.sleep(50); } catch (InterruptedException ie) {}
-	            test.close();
-	            System.out.println(hiControlText);
-	            System.out.println(lowControlText);
-	        }
-
+	          
+	            //System.out.println(hiControlText);
+	            //System.out.println(lowControlText);
+	    	}
 	        // Wait 5 seconds then shutdown
 	        try { Thread.sleep(100); } catch (InterruptedException ie) {}
 	    }
-	    
-	    public double GetAdam4017Data(int address,int channel){
-	    	String returnData = "";
-	    	String sendString = "#020";
-	    	double voltage = 0;
-	    	CommController test = new CommController();
-	        if ( test.initialize() ) {
-	    		test.sendData(sendString);
-	    		try { Thread.sleep(30); } catch (InterruptedException ie) {}
-	    		
-		    	returnData = test.getString;
-		    	System.out.println("sendString:"+sendString);
-		    	System.out.println("returnData"+test.getString);
-	        }
-	        
-	    	
-	    	
-	    	test.close();
-	    	/*if(returnData!=""){
-		    	returnData = returnData.substring(2);
-		    	voltage = Double.parseDouble(returnData.substring(2));
-		        if(returnData.charAt(1)=='-'){
-		        	voltage = voltage * -1;
-		        }
-	    	}*/
-	    	return voltage;
-	    } 
 }

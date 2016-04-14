@@ -131,18 +131,17 @@ public class GasPanel extends JPanel {
 				gasPanel[i].add(gasUnit[i]);
 				
 				editBtn[i] = new JButton("Edit");
-				editBtn[i].setBounds(515, 10, 59, 23);
+				editBtn[i].setBounds(515, 10, 59, 30);
 				editBtn[i].setBackground(sys.sysEdit);
 				editBtn[i].setForeground(sys.sysWhite);
 				editBtn[i].setBorder(null);
 				editBtn[i].setActionCommand(showGasName);
-				gasPanel[i].add(editBtn[i]);
-				
+				gasPanel[i].add(editBtn[i]);				
 				delBtn[i] = new JButton("Del");
 				delBtn[i].setBackground(sys.sysRed);
 				delBtn[i].setForeground(sys.sysWhite);
 				delBtn[i].setBorder(null);
-				delBtn[i].setBounds(593, 10, 59, 23);
+				delBtn[i].setBounds(593, 10, 59, 30);
 				delBtn[i].setActionCommand(showGasName);
 				gasPanel[i].add(delBtn[i]);
 				

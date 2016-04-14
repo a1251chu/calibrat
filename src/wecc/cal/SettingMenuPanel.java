@@ -62,8 +62,15 @@ public class SettingMenuPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				MainFrame.mainFrame.cl.show(MainFrame.mainFrame.getContentPane(), "main");
+			}
+		});
+		
+		MFCCalBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.mainFrame.cl.show(MainFrame.mainFrame.getContentPane(), "mfcCal");
 			}
 		});
 		

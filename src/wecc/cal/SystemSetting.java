@@ -103,7 +103,7 @@ public class SystemSetting {
 		sysAddBtn.setFont(mainBtnFont);
 		sysAddBtn.setBorder(null);
 		
-		sysGasBtn.setSize(100, 100);
+		sysGasBtn.setSize(160, 100);
 		sysGasBtn.setIcon(cylIcon); 
 		sysGasBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sysGasBtn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -112,7 +112,7 @@ public class SystemSetting {
 		sysGasBtn.setFont(mainBtnFont);
 		sysGasBtn.setBorder(null);
 		
-		sysSetBtn.setSize(100, 100);
+		sysSetBtn.setSize(160, 100);
 		sysSetBtn.setIcon(settingIcon); 
 		sysSetBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sysSetBtn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -130,7 +130,7 @@ public class SystemSetting {
 		sysLoginBtn.setFont(mainBtnFont);
 		sysLoginBtn.setBorder(null);
 		
-		sysManualBtn.setSize(100, 100);
+		sysManualBtn.setSize(160, 100);
 		sysManualBtn.setIcon(manualIcon); 
 		sysManualBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sysManualBtn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -139,7 +139,7 @@ public class SystemSetting {
 		sysManualBtn.setFont(mainBtnFont);
 		sysManualBtn.setBorder(null);
 		
-		sysAutoBtn.setSize(100, 100);
+		sysAutoBtn.setSize(160, 100);
 		sysAutoBtn.setIcon(autoIcon); 
 		sysAutoBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sysAutoBtn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -148,7 +148,7 @@ public class SystemSetting {
 		sysAutoBtn.setFont(mainBtnFont);
 		sysAutoBtn.setBorder(null);
 		
-		sysStandbyBtn.setSize(100, 100);
+		sysStandbyBtn.setSize(160, 100);
 		sysStandbyBtn.setIcon(standbyIcon); 
 		sysStandbyBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sysStandbyBtn.setHorizontalTextPosition(SwingConstants.CENTER);

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,7 +18,7 @@ public class ManualPanel extends JPanel {
 		initComponent();
 	}
 	
-	public void initComponent() {
+	public void initComponent() {     //初始化畫面元件
 		setBounds(0, 0, 1050, 1500);
 		setBackground(sys.sysGenBackground);
 		setLayout(null);
@@ -29,7 +30,7 @@ public class ManualPanel extends JPanel {
 		cancelBtn.setLocation(425, 361);
 		super.add(cancelBtn);
 
-		cancelBtn.addActionListener(new ActionListener() {
+		cancelBtn.addActionListener(new ActionListener() {  //設定Cancel按鈕動作
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -37,7 +38,7 @@ public class ManualPanel extends JPanel {
 			}
 		});
 		
-		genBtn.addActionListener(new ActionListener() {
+		genBtn.addActionListener(new ActionListener() {		//設定GEN 按鈕動作
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -47,26 +48,19 @@ public class ManualPanel extends JPanel {
 				//mainFrame.setVisible(true);
 				double airMFCFlow = (arrayToDouble(highMFCNum)* 1000.0);
 				double gasMFCFlow= arrayToDouble(lowMFCNum);
-				if((airMFCFlow<500 && airMFCFlow != 0) || airMFCFlow>9500 || gasMFCFlow>95.0 || (gasMFCFlow < 10 && gasMFCFlow != 0)){
-					MainFrame.statusMessage = "MFC Flow Warning";
-					MainFrame.txtStatusMessage.setText(MainFrame.statusMessage);
+				MainFrame.cal.manualGen(airMFCFlow, gasMFCFlow);
+				MainFrame.statusMessage = MainFrame.cal.status;
+				MainFrame.txtStatusMessage.setText(MainFrame.statusMessage);
+				if(MainFrame.cal.error == 1){
 					MainFrame.txtStatusMessage.setForeground(Color.RED);
 				}else{
-					MainFrame.cal.manualGen(airMFCFlow, gasMFCFlow);
-					//MainFrame.cal.highMFC.targetFlow = arrayToDouble(highMFCNum);
-					//System.out.println(MainFrame.cal.airVoltage);
-					//System.out.println(MainFrame.cal.gasVoltage);
-					//MainFrame.status = 1;
-					MainFrame.airVoltage.setText(Double.toString(MainFrame.cal.airVoltage));
-					MainFrame.gasVoltage.setText(Double.toString(MainFrame.cal.gasVoltage));
 					MainFrame.standbyBtn.setEnabled(true);
 					MainFrame.manualBtn.setEnabled(false);
-					
-					MainFrame.statusMessage = "Manual Generate";
-					MainFrame.txtStatusMessage.setText(MainFrame.statusMessage);
+					MainFrame.autoBtn.setEnabled(false);
+					MainFrame.gasBtn.setEnabled(false);
 					MainFrame.txtStatusMessage.setForeground(Color.WHITE);
-					MainFrame.lblAirTargetFlow.setText(String.valueOf(MainFrame.cal.highMFC.targetFlowCC/1000)+"L");
-					MainFrame.lblGasTargetFlow.setText(String.valueOf(MainFrame.cal.lowMFC.targetFlowCC)+"cc");
+					MainFrame.lblAirTargetFlow.setText(String.valueOf(new DecimalFormat("#.##").format(MainFrame.cal.highMFC.targetFlowCC / 1000)) + "L");
+					MainFrame.lblGasTargetFlow.setText(String.valueOf(new DecimalFormat("##.##").format(MainFrame.cal.lowMFC.targetFlowCC)) + "cc");
 				}
 				closeManualFrame();
 
@@ -174,7 +168,7 @@ public class ManualPanel extends JPanel {
 		setLowMFCBtnListener(lowMFCUpBtn,lowMFCLbl,lowMFCDownBtn);
 	}
 	
-	private void setHighMFCBtnListener(JButton[] highMFCUpBtn, JLabel[] highMFCLbl,JButton[] highMFCDownBtn) {
+	private void setHighMFCBtnListener(JButton[] highMFCUpBtn, JLabel[] highMFCLbl,JButton[] highMFCDownBtn) {//設定high MFC流量按鈕
 		highMFCUpBtn[0].addActionListener(new ActionListener() {
 			
 			@Override
@@ -281,7 +275,7 @@ public class ManualPanel extends JPanel {
 		});
 	}
 	
-	private void setLowMFCBtnListener(JButton[] lowMFCUpBtn, JLabel[] lowMFCLbl,JButton[] lowMFCDownBtn) {
+	private void setLowMFCBtnListener(JButton[] lowMFCUpBtn, JLabel[] lowMFCLbl,JButton[] lowMFCDownBtn) {     //設定low MFC流量按鈕
 		lowMFCUpBtn[0].addActionListener(new ActionListener() {
 			
 			@Override
@@ -375,8 +369,7 @@ public class ManualPanel extends JPanel {
 			}
 		});
 		
-		lowMFCDownBtn[3].addActionListener(new ActionListener() {
-			
+		lowMFCDownBtn[3].addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -388,7 +381,7 @@ public class ManualPanel extends JPanel {
 		});
 	}
 	
-	private double arrayToDouble(int[] num){
+	private double arrayToDouble(int[] num){   //將陣列轉型成double
 		double result = 0;
 		double dec=0.01;
 		for(int i=(num.length-1);i>=0;i--){
@@ -399,7 +392,7 @@ public class ManualPanel extends JPanel {
 		
 	}
 	
-	private void closeManualFrame(){
+	private void closeManualFrame(){    //關閉畫面
 		MainFrame.mainFrame.cl.show(MainFrame.mainFrame.getContentPane(), "main");
 	}
 

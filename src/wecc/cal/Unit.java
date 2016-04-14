@@ -8,7 +8,6 @@ public class Unit {
 	public  Unit(){
 		unitMap.put("PPB", 1.0);
 		unitMap.put("PPM", 1000.0);
-		unitMap.put("PCT", 10000000.0);
-		
+		unitMap.put("PCT", 10000000.0);	
 	}
 }

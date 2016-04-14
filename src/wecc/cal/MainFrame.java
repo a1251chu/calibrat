@@ -42,6 +42,7 @@ import eu.hansolo.steelseries.tools.LcdColor;
 import eu.hansolo.steelseries.tools.LedColor;
 
 import java.awt.CardLayout;
+import javax.swing.JTextArea;
 
 public class MainFrame extends JFrame {
 
@@ -63,6 +64,8 @@ public class MainFrame extends JFrame {
 	static JLabel lblAirTargetFlow;
 	static JButton standbyBtn;
 	static JButton manualBtn;
+	static JButton autoBtn;
+	static JButton gasBtn;
 	SystemSetting sys = new SystemSetting();
 	GasPanel gasPanel;
 	AutoPanel autoPanel;
@@ -70,14 +73,20 @@ public class MainFrame extends JFrame {
 	TypePanel typePanel;
 	SettingMenuPanel settingMenu;
 	DeleteGasPanel deleteGas;
+	MFCCalPanel mfcCal;
 	CardLayout cl;
-	JButton autoBtn;
+
 	Radial airPressureRad;
 	Radial gasPressureRad;
-	private JLabel lblGasPressure;
-	private JLabel lblAirPressure;
 	private JPanel panel_4;
 	private JLabel lblNewLabel;
+	private JTextField txtActFlow;
+	private JTextField txtStatus;
+	private JTextField txtGasPressure;
+	private JTextField txtAirPressure;
+	private JTextField txtActGasFlow;
+	private JTextField txtTargetactFlow;
+	
 
 	public static void main(String[] args) {
 
@@ -88,13 +97,12 @@ public class MainFrame extends JFrame {
 					mainFrame = new MainFrame();
 					device.setFullScreenWindow(mainFrame);
 					mainFrame.setVisible(true);
-
+					//cal.getAnalogSignal.start();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		});
-		
+		});	
 	}
 	/**
 	 * Create the frame.
@@ -118,25 +126,31 @@ public class MainFrame extends JFrame {
 		panel_1.setLayout(null);
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(197, 140, 542, 172);
+		panel_3.setBounds(207, 135, 575, 237);
 		
 
 
-		
-		JButton gasBtn = sys.sysGasBtn;
-		gasBtn.setLocation(25, 361);
+		int btnStartXposition = 0;//35;
+		int gap = 160;//153;
+		gasBtn = sys.sysGasBtn;
+		gasBtn.setLocation(btnStartXposition, 375);
 		panel_1.add(gasBtn);
 	
 		autoBtn = sys.sysAutoBtn;
-		autoBtn.setLocation(180, 361);
+		autoBtn.setLocation(btnStartXposition+gap, 375);
 		panel_1.add(autoBtn);
 		
 		manualBtn = sys.sysManualBtn;
-		manualBtn.setLocation(333, 361);
+		manualBtn.setLocation(btnStartXposition+gap*2, 375);
 		panel_1.add(manualBtn);
 		
+		standbyBtn = sys.sysStandbyBtn;
+		standbyBtn.setEnabled(false);
+		standbyBtn.setLocation(btnStartXposition+gap*3, 375);
+		panel_1.add(standbyBtn);
+		
 		JButton settingBtn = sys.sysSetBtn;
-		settingBtn.setLocation(625, 361);
+		settingBtn.setLocation(btnStartXposition+gap*4, 375);
 		panel_1.add(settingBtn);
 		
 		BufferedImage myPicture = null;
@@ -148,94 +162,35 @@ public class MainFrame extends JFrame {
 			e1.printStackTrace();
 		}
 		
-		txtStatusMessage = new JTextField();
-		txtStatusMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		txtStatusMessage.setEditable(false);
-		txtStatusMessage.setText("Stand By");
-		txtStatusMessage.setFont(new Font("Arial", Font.BOLD, 20));
-		txtStatusMessage.setForeground(Color.WHITE);
-		txtStatusMessage.setBackground(Color.BLUE);
-		txtStatusMessage.setBounds(24, 323, 715, 31);
-		panel_1.add(txtStatusMessage);
-		txtStatusMessage.setColumns(10);
-		
-		standbyBtn = sys.sysStandbyBtn;
-		standbyBtn.setEnabled(false);
-		standbyBtn.setBounds(482, 361, 100, 100);
-		panel_1.add(standbyBtn);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(sys.sysWhite);
-		panel_2.setBounds(24, 10, 163, 303);
-		panel_2.setVisible(true);
-		panel_2.setLayout(null);
-		panel_1.add(panel_2);
-		
-		airPressureRad = new Radial();
-		airPressureRad.setFrameVisible(false);
-		airPressureRad.setTrackVisible(true);
-		airPressureRad.setLedVisible(false);
-		airPressureRad.setBounds(23, 25, 125, 125);
-		//		airPressureRad.setLcdColor(LcdColor.RED_LCD);
-		airPressureRad.setLcdColor(LcdColor.GREEN_LCD);
-		airPressureRad.setTrackStartColor(Color.GREEN);
-		airPressureRad.setTrackSectionColor(Color.YELLOW);
-		airPressureRad.setTrackStopColor(Color.RED);
-		airPressureRad.setValue(0.0);
-		airPressureRad.setMinValue(0.0);
-		airPressureRad.setMaxValue(50.0);
-				//rad.setBackgroundColor(BackgroundColor.BLUE);
-		airPressureRad.setLcdDecimals(2);
-		airPressureRad.setUnitString("PSI");
-		airPressureRad.setTrackStart(20.0);
-		airPressureRad.setTrackSection(30);
-		airPressureRad.setTrackStop(50.0);
-		airPressureRad.setTitle("air Pressure");
-		panel_2.add(airPressureRad);
-		
-		gasPressureRad = new Radial();
-		gasPressureRad.setFrameVisible(false);
-		gasPressureRad.setValue(0.0);
-		gasPressureRad.setUnitString("PSI");
-		gasPressureRad.setTrackVisible(true);
-		gasPressureRad.setTrackStopColor(Color.RED);
-		gasPressureRad.setTrackStop(50.0);
-		gasPressureRad.setTrackStartColor(Color.GREEN);
-		gasPressureRad.setTrackStart(20.0);
-		gasPressureRad.setTrackSectionColor(Color.YELLOW);
-		gasPressureRad.setTrackSection(30.0);
-		gasPressureRad.setTitle("gas Pressure");
-		gasPressureRad.setMinValue(0.0);
-		gasPressureRad.setMaxValue(50.0);
-		gasPressureRad.setLedVisible(false);
-		gasPressureRad.setLcdDecimals(2);
-		gasPressureRad.setLcdColor(LcdColor.GREEN_LCD);
-		gasPressureRad.setBounds(23, 168, 125, 125);
-		panel_2.add(gasPressureRad);
-		
-		lblGasPressure = new JLabel("Gas Pressure");
-		lblGasPressure.setBounds(10, 151, 138, 15);
-		panel_2.add(lblGasPressure);
-		
-		lblAirPressure = new JLabel("Air Pressure");
-		lblAirPressure.setBounds(10, 10, 119, 15);
-		panel_2.add(lblAirPressure);
 		
 		
-		panel_1.add(panel_3);
+		JPanel pressurePanel = new JPanel();
+		pressurePanel.setBackground(sys.sysWhite);
+		pressurePanel.setBounds(28, 10, 169, 362);
+		pressurePanel.setVisible(true);
+		pressurePanel.setLayout(null);
+		panel_1.add(pressurePanel);
+		
+		initGauge(panel_1, panel_3, pressurePanel);		//設定圖表樣式
 		
 		panel_3.setLayout(null);
 		Linear airFlowLinear = new Linear();
 		panel_3.add(airFlowLinear);
 		airFlowLinear.setUnitString("Liter");
-		airFlowLinear.setTitle("Air Act Flow");
+		airFlowLinear.setTitle("Air");
+		airFlowLinear.setLcdInfoFont(new Font("Arial Black", Font.BOLD, 20));
+		airFlowLinear.setLcdValueFont(new Font("Arial Black", Font.BOLD, 20));
+		airFlowLinear.setTitleAndUnitFont(new Font("Arial Black", Font.BOLD, 20));
+		airFlowLinear.setFont(new Font("Arial Black", Font.BOLD, 20));
+		airFlowLinear.setDigitalFont(false);
+		airFlowLinear.setLcdUnitFont(new Font("Arial Black", Font.BOLD, 20));
 		airFlowLinear.setLcdDecimals(2);
 		airFlowLinear.setThreshold(5.5);
 		airFlowLinear.setThresholdColor(ColorDef.GREEN);
 		airFlowLinear.setLedVisible(false);
 		airFlowLinear.setBackgroundColor(BackgroundColor.LIGHT_GRAY);
 		airFlowLinear.setValueColor(ColorDef.BLUE);
-		airFlowLinear.setBounds(10,38,509,57);
+		airFlowLinear.setBounds(10,33,555,85);
 		airFlowLinear.setFrameVisible(false);
 		airFlowLinear.setValue(3.5);
 		airFlowLinear.setMaxValue(10);
@@ -261,7 +216,7 @@ public class MainFrame extends JFrame {
 		gasFlowLinear.setLcdDecimals(2);
 		gasFlowLinear.setFrameVisible(false);
 		gasFlowLinear.setBackgroundColor(BackgroundColor.ANTHRACITE);
-		gasFlowLinear.setBounds(10, 105, 509, 57);
+		gasFlowLinear.setBounds(10, 150, 555, 84);
 		gasFlowLinear.setTrackStart(0.0);
 		gasFlowLinear.setTrackSection(80.0);
 		gasFlowLinear.setTrackStop(100);
@@ -271,76 +226,124 @@ public class MainFrame extends JFrame {
 		gasFlowLinear.setTrackVisible(true);
 		panel_3.add(gasFlowLinear);
 		
+		txtActFlow = new JTextField();
+		txtActFlow.setText(" ACT Air Flow");
+		txtActFlow.setHorizontalAlignment(SwingConstants.LEFT);
+		txtActFlow.setForeground(Color.WHITE);
+		txtActFlow.setFont(new Font("Arial", Font.BOLD, 20));
+		txtActFlow.setEditable(false);
+		txtActFlow.setColumns(10);
+		txtActFlow.setBackground(new Color(11,54,100));
+		txtActFlow.setBounds(0, 0, 575, 30);
+		panel_3.add(txtActFlow);
 		
-		panel_4 = new JPanel();
-		panel_4.setBackground(new Color(37,37,37));
-		panel_4.setBounds(0, 0, 542, 28);
-		panel_3.add(panel_4);
-		panel_4.setLayout(null);
-		
-		lblNewLabel = new JLabel("MFC Act  Flow");
-		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		lblNewLabel.setBounds(10, 10, 151, 15);
-		lblNewLabel.setForeground(Color.WHITE);
-		panel_4.add(lblNewLabel);
-		
+		txtActGasFlow = new JTextField();
+		txtActGasFlow.setText(" ACT Gas Flow");
+		txtActGasFlow.setHorizontalAlignment(SwingConstants.LEFT);
+		txtActGasFlow.setForeground(Color.WHITE);
+		txtActGasFlow.setFont(new Font("Arial", Font.BOLD, 20));
+		txtActGasFlow.setEditable(false);
+		txtActGasFlow.setColumns(10);
+		txtActGasFlow.setBackground(new Color(11, 54, 100));
+		txtActGasFlow.setBounds(0, 119, 575, 30);
+		panel_3.add(txtActGasFlow);
+				
 		JPanel panel = new JPanel();
-		panel.setBounds(197, 10, 542, 120);
+		panel.setBounds(207, 10, 365, 120);
+		panel.setBackground(new Color(20,55,255));
 		panel_1.add(panel);
-		panel.setBackground(sys.sysMainPanel1);
+		
 		panel.setLayout(null);
 		
 
 		JLabel lblCal = new JLabel("Air");
-		lblCal.setForeground(sys.sysMainText);
+		lblCal.setForeground(Color.WHITE);
 		lblCal.setFont(sys.mainPanelFont);
-		lblCal.setBounds(175, 10, 58, 36);
+		lblCal.setBounds(175, 25, 58, 36);
 		panel.add(lblCal);
 		
 		JLabel lblGas = new JLabel("GAS");
-		lblGas.setForeground(sys.sysMainText);
+		lblGas.setForeground(Color.WHITE);
 		lblGas.setFont(sys.mainPanelFont);
-		lblGas.setBounds(284, 10, 72, 36);
+		lblGas.setBounds(268, 25, 72, 36);
 		panel.add(lblGas);
 		
-		JLabel lblVoltage = new JLabel("Voltage");
-		lblVoltage.setForeground(sys.sysMainText);
+		JLabel lblVoltage = new JLabel("Actual Flow");
+		lblVoltage.setForeground(Color.WHITE);
 		lblVoltage.setFont(sys.mainPanelFont);
-		lblVoltage.setBounds(10, 85, 122, 36);
+		lblVoltage.setBounds(10, 85, 155, 36);
 		panel.add(lblVoltage);
 		
 		airVoltage = new JLabel("0.0");
-		airVoltage.setForeground(sys.sysMainText);
-		airVoltage.setFont(sys.mainPanelFont);
+		airVoltage.setForeground(Color.WHITE);
+		airVoltage.setFont(new Font("Arial Black", Font.BOLD, 22));
 		airVoltage.setBounds(175, 85, 122, 36);
 		panel.add(airVoltage);
 		
 		gasVoltage = new JLabel("0.0");
-		gasVoltage.setForeground(sys.sysMainText);
-		gasVoltage.setFont(sys.mainPanelFont);
-		gasVoltage.setBounds(294, 85, 132, 36);
+		gasVoltage.setForeground(Color.WHITE);
+		gasVoltage.setFont(new Font("Arial Black", Font.BOLD, 22));
+		gasVoltage.setBounds(279, 85, 132, 36);
 		panel.add(gasVoltage);
 		
 		JLabel lblTargetFlow = new JLabel("Target Flow");
-		lblTargetFlow.setForeground(sys.sysMainText);
+		lblTargetFlow.setForeground(Color.WHITE);
 		lblTargetFlow.setFont(sys.mainPanelFont);
-		lblTargetFlow.setBounds(10, 39, 182, 36);
+		lblTargetFlow.setBounds(10, 50, 153, 36);
 		panel.add(lblTargetFlow);
 		
 		lblAirTargetFlow = new JLabel("0.0");
-		lblAirTargetFlow.setForeground(sys.sysMainText);
-		lblAirTargetFlow.setFont(sys.mainPanelFont);
-		lblAirTargetFlow.setBounds(175, 39, 122, 36);
+		lblAirTargetFlow.setForeground(Color.WHITE);
+		lblAirTargetFlow.setFont(new Font("Arial Black", Font.BOLD, 22));
+		lblAirTargetFlow.setBounds(175, 50, 122, 36);
 		panel.add(lblAirTargetFlow);
 		
 		lblGasTargetFlow = new JLabel("0.0");
-		lblGasTargetFlow.setForeground(sys.sysMainText);
-		lblGasTargetFlow.setFont(sys.mainPanelFont);
-		lblGasTargetFlow.setBounds(294, 39, 132, 36);
+		lblGasTargetFlow.setForeground(Color.WHITE);
+		lblGasTargetFlow.setFont(new Font("Arial Black", Font.BOLD, 22));
+		lblGasTargetFlow.setBounds(279, 50, 132, 36);
 		panel.add(lblGasTargetFlow);
 		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 		picLabel.setBounds(385, 10, 147, 36);
 		panel.add(picLabel);
+		
+		txtTargetactFlow = new JTextField();
+		txtTargetactFlow.setText("Target/Act Flow");
+		txtTargetactFlow.setHorizontalAlignment(SwingConstants.LEFT);
+		txtTargetactFlow.setForeground(Color.WHITE);
+		txtTargetactFlow.setFont(new Font("Arial", Font.BOLD, 20));
+		txtTargetactFlow.setEditable(false);
+		txtTargetactFlow.setColumns(10);
+		txtTargetactFlow.setBackground(new Color(15, 115, 255));
+		txtTargetactFlow.setBounds(0, 0, 375, 30);
+		panel.add(txtTargetactFlow);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(575, 10, 207, 120);
+		panel_1.add(panel_2);
+		panel_2.setLayout(null);
+		
+		txtStatusMessage = new JTextField();
+		txtStatusMessage.setBounds(0, 29, 207, 91);
+		panel_2.add(txtStatusMessage);
+		txtStatusMessage.setHorizontalAlignment(SwingConstants.CENTER);
+		txtStatusMessage.setEditable(false);
+		txtStatusMessage.setText("Stand By");
+		txtStatusMessage.setFont(new Font("Arial", Font.BOLD, 24));
+		txtStatusMessage.setForeground(Color.WHITE);
+		txtStatusMessage.setBackground(new Color(12,166,90));
+		txtStatusMessage.setColumns(10);
+		
+		txtStatus = new JTextField();
+		txtStatus.setText(" Status");
+		txtStatus.setHorizontalAlignment(SwingConstants.LEFT);
+		txtStatus.setForeground(Color.WHITE);
+		txtStatus.setFont(new Font("Arial", Font.BOLD, 20));
+		txtStatus.setEditable(false);
+		txtStatus.setColumns(10);
+		txtStatus.setBackground(new Color(10, 150, 81));
+		txtStatus.setBounds(0, 0, 207, 30);
+		panel_2.add(txtStatus);
 		
 		standbyBtn.addActionListener(new ActionListener() {
 			
@@ -355,6 +358,7 @@ public class MainFrame extends JFrame {
 				standbyBtn.setEnabled(false);
 				manualBtn.setEnabled(true);
 				autoBtn.setEnabled(true);
+				gasBtn.setEnabled(true);
 				statusMessage = "Stand By";
 				txtStatusMessage.setText(statusMessage);
 				txtStatusMessage.setForeground(Color.WHITE);
@@ -401,11 +405,11 @@ public class MainFrame extends JFrame {
 		Thread airFlowDetector = new Thread(){
 			@Override
 			public void run() {
-				int errorCount = 0;
 				while(true) {
 					double oldvalue = airFlowLinear.getValue();
-					double newvalue = cal.getMFC1Flow();
-					//double step = (newvalue - oldvalue)/500;
+					double newvalue = cal.airActFlow;
+					airVoltage.setText(String.valueOf(newvalue));
+//					System.out.println(cal.airActFlow);
 					double step = 0.01;
 					if(newvalue>oldvalue){
 						while(newvalue>oldvalue){
@@ -419,6 +423,7 @@ public class MainFrame extends JFrame {
 							}
 						}
 					}
+					
 					else{
 						while(newvalue<oldvalue){
 							airFlowLinear.setValue(oldvalue);
@@ -432,22 +437,6 @@ public class MainFrame extends JFrame {
 							
 						}
 					}
-					/*if(airPressureRad.getValue()<20 || airPressureRad.getValue()>35){
-						errorCount++;
-					}
-					else{
-						errorCount=0;
-					}
-					if(errorCount>30){
-						if(airPressureRad.getLcdColor()!=LcdColor.RED_LCD){
-							airPressureRad.setLcdColor(LcdColor.RED_LCD);
-						}
-					}
-					else{
-						if(airPressureRad.getLcdColor()!=LcdColor.GREEN_LCD){
-							airPressureRad.setLcdColor(LcdColor.GREEN_LCD);
-						}
-					}*/
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
@@ -464,7 +453,10 @@ public class MainFrame extends JFrame {
 				int errorCount = 0;
 				while(true) {
 					double oldvalue = gasFlowLinear.getValue();
-					double newvalue = new Random().nextInt(100);
+					double newvalue = cal.gasActFlow;
+					if(newvalue>=0){
+						gasVoltage.setText(String.valueOf(newvalue));
+					}
 					double step = 0.01;
 					if(newvalue>oldvalue){
 						while(newvalue>oldvalue){
@@ -491,22 +483,6 @@ public class MainFrame extends JFrame {
 							
 						}
 					}
-					/*if(airPressureRad.getValue()<20 || airPressureRad.getValue()>35){
-						errorCount++;
-					}
-					else{
-						errorCount=0;
-					}
-					if(errorCount>30){
-						if(airPressureRad.getLcdColor()!=LcdColor.RED_LCD){
-							airPressureRad.setLcdColor(LcdColor.RED_LCD);
-						}
-					}
-					else{
-						if(airPressureRad.getLcdColor()!=LcdColor.GREEN_LCD){
-							airPressureRad.setLcdColor(LcdColor.GREEN_LCD);
-						}
-					}*/
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
@@ -524,7 +500,7 @@ public class MainFrame extends JFrame {
 				int errorCount = 0;
 				while(true) {
 					double oldvalue = airPressureRad.getValue();
-					double newvalue = new Random().nextInt(40);
+					double newvalue = cal.airPressure;
 					//double step = (newvalue - oldvalue)/500;
 					double step = 0.03;
 					if(newvalue>oldvalue){
@@ -587,7 +563,7 @@ public class MainFrame extends JFrame {
 				int errorCount = 0;
 				while(true) {
 					double oldvalue = gasPressureRad.getValue();
-					double newvalue = new Random().nextInt(40);
+					double newvalue = cal.gasPressure;
 					//double step = (newvalue - oldvalue)/500;
 					double step = 0.03;
 					if(newvalue>oldvalue){
@@ -646,6 +622,74 @@ public class MainFrame extends JFrame {
 		airFlowDetector.start();
 		gasFlowDetector.start();
 	}
+	public void initGauge(JPanel panel_1, JPanel panel_3, JPanel pressurePanel) {
+		airPressureRad = new Radial();
+		airPressureRad.setFrameVisible(false);
+		airPressureRad.setTrackVisible(true);
+		airPressureRad.setLedVisible(false);
+		airPressureRad.setBounds(20, 40, 133, 133);
+		//		airPressureRad.setLcdColor(LcdColor.RED_LCD);
+		airPressureRad.setLcdColor(LcdColor.GREEN_LCD);
+		airPressureRad.setTrackStartColor(Color.GREEN);
+		airPressureRad.setTrackSectionColor(Color.YELLOW);
+		airPressureRad.setTrackStopColor(Color.RED);
+		airPressureRad.setValue(0.0);
+		airPressureRad.setMinValue(0.0);
+		airPressureRad.setMaxValue(50.0);
+				//rad.setBackgroundColor(BackgroundColor.BLUE);
+		airPressureRad.setLcdDecimals(2);
+		airPressureRad.setUnitString("PSI");
+		airPressureRad.setTrackStart(20.0);
+		airPressureRad.setTrackSection(30);
+		airPressureRad.setTrackStop(50.0);
+		airPressureRad.setTitle("air Pressure");
+		pressurePanel.add(airPressureRad);
+		
+		gasPressureRad = new Radial();
+		gasPressureRad.setFrameVisible(false);
+		gasPressureRad.setValue(0.0);
+		gasPressureRad.setUnitString("PSI");
+		gasPressureRad.setTrackVisible(true);
+		gasPressureRad.setTrackStopColor(Color.RED);
+		gasPressureRad.setTrackStop(50.0);
+		gasPressureRad.setTrackStartColor(Color.GREEN);
+		gasPressureRad.setTrackStart(20.0);
+		gasPressureRad.setTrackSectionColor(Color.YELLOW);
+		gasPressureRad.setTrackSection(30.0);
+		gasPressureRad.setTitle("gas Pressure");
+		gasPressureRad.setMinValue(0.0);
+		gasPressureRad.setMaxValue(50.0);
+		gasPressureRad.setLedVisible(false);
+		gasPressureRad.setLcdDecimals(2);
+		gasPressureRad.setLcdColor(LcdColor.GREEN_LCD);
+		gasPressureRad.setBounds(20, 219, 136, 133);
+		pressurePanel.add(gasPressureRad);
+		
+		txtGasPressure = new JTextField();
+		txtGasPressure.setText("Gas Pressure");
+		txtGasPressure.setHorizontalAlignment(SwingConstants.LEFT);
+		txtGasPressure.setForeground(Color.WHITE);
+		txtGasPressure.setFont(new Font("Arial", Font.BOLD, 20));
+		txtGasPressure.setEditable(false);
+		txtGasPressure.setColumns(10);
+		txtGasPressure.setBackground(new Color(203, 80, 48));
+		txtGasPressure.setBounds(0, 0, 169, 30);
+		pressurePanel.add(txtGasPressure);
+		
+		txtAirPressure = new JTextField();
+		txtAirPressure.setText("Air Pressure");
+		txtAirPressure.setHorizontalAlignment(SwingConstants.LEFT);
+		txtAirPressure.setForeground(Color.WHITE);
+		txtAirPressure.setFont(new Font("Arial", Font.BOLD, 20));
+		txtAirPressure.setEditable(false);
+		txtAirPressure.setColumns(10);
+		txtAirPressure.setBackground(new Color(203, 80, 48));
+		txtAirPressure.setBounds(0, 183, 169, 30);
+		pressurePanel.add(txtAirPressure);
+		
+		
+		panel_1.add(panel_3);
+	}
 	
 	
 	public void setCardLayoutComponent(JPanel panel_1) {
@@ -656,6 +700,7 @@ public class MainFrame extends JFrame {
 		typePanel = new TypePanel();
 		settingMenu = new SettingMenuPanel();
 		deleteGas = new DeleteGasPanel();
+		mfcCal = new MFCCalPanel();
 		cl = (CardLayout)(getContentPane().getLayout());
 		getContentPane().add(panel_1,"main");
 		getContentPane().add(manualPanel, "manual");
@@ -665,6 +710,7 @@ public class MainFrame extends JFrame {
 		getContentPane().add(typePanel, "type");
 		getContentPane().add(settingMenu,"settingMenu");
 		getContentPane().add(deleteGas,"deleteGas");
+		getContentPane().add(mfcCal, "mfcCal");
 	}
 	private void setFullScreen() {
 		setBackground(Color.GRAY);
