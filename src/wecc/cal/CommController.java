@@ -121,7 +121,7 @@ public class CommController implements SerialPortEventListener{
 	           break;
 	        case SerialPortEvent.DATA_AVAILABLE:
 	           // we get here if data has been received
-	           byte[] readBuffer = new byte[20];
+	         //  byte[] readBuffer = new byte[20];
 	           try {
 	        	   if ( input == null ) {
 	                    input = new BufferedReader(

@@ -1,6 +1,5 @@
 package wecc.cal;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,8 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,10 +34,10 @@ public class Calibratrion {
 	GPIOController gpioControl = new GPIOController();
 	public Calibratrion(double highRangeVoltage, double highRangeFlowCC, double lowRangeVoltage, double lowRangeFlowCC)
 			throws IOException {
-		this.highMFC = new MassFlowController(highRangeVoltage, highRangeFlowCC, 1, 0);
-		this.lowMFC = new MassFlowController(lowRangeVoltage, lowRangeFlowCC, 2, 1);
-		airPressureChannel = 2;
-		gasPressureChannel = 3;
+		this.highMFC = new MassFlowController(highRangeVoltage, highRangeFlowCC, 1, 5);
+		this.lowMFC = new MassFlowController(lowRangeVoltage, lowRangeFlowCC, 2, 6);
+		airPressureChannel = 0;
+		gasPressureChannel = 1;
 		saveMFCTable();
 		getGasTable();
 		getAnalogSignal.start();
@@ -165,6 +162,7 @@ public class Calibratrion {
 		String gasV = df.format(gasVoltage);
 		String hiControlText = "#01C0+" + airV + (char) 13;
 		String lowControlText = "#01C1+" + gasV + (char) 13;
+		gpioControl.runLedBlink();
 		try {
 			commController.MFCControl(hiControlText, lowControlText);
 		} catch (Exception e) {

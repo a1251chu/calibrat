@@ -1,21 +1,11 @@
 package wecc.cal;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -331,7 +321,7 @@ public class AutoPanel extends JPanel {
 		}
 	}
 	public void getGasName() { // 取得Gas名稱
-		gasTablePPM = new TreeMap(MainFrame.cal.gasTablePPM);
+		//gasTablePPM = new TreeMap(MainFrame.cal.gasTablePPM);
 		gasTableNum = MainFrame.cal.gasTablePPM.size();
 		gasTable = new String[gasTableNum+1];
 		int i = 1;

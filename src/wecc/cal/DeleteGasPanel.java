@@ -1,8 +1,6 @@
 package wecc.cal;
 
 import javax.swing.JPanel;
-import javax.swing.plaf.synth.SynthSliderUI;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -3,15 +3,10 @@ package wecc.cal;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
-import java.awt.FlowLayout;
-import java.awt.Color;
 
 public class SettingMenuPanel extends JPanel {
 
