@@ -113,7 +113,7 @@ public class ManualPanel extends JPanel {
 		JLabel unitLbl = new JLabel("Liter");
 		unitLbl.setForeground(Color.ORANGE);
 		unitLbl.setFont(new Font("Rockwell Extra Bold", Font.BOLD, 31));
-		unitLbl.setBounds(numXPosition,136,123,84);
+		unitLbl.setBounds(numXPosition-10,125,123,84);
 		
 		add(unitLbl);
 		
@@ -160,7 +160,7 @@ public class ManualPanel extends JPanel {
 		JLabel flowUnitLbl = new JLabel("CC");
 		flowUnitLbl.setForeground(Color.ORANGE);
 		flowUnitLbl.setFont(new Font("Rockwell Extra Bold", Font.BOLD, 31));
-		flowUnitLbl.setBounds(numXPosition,256,120,84);
+		flowUnitLbl.setBounds(numXPosition-10,240,120,84);
 		
 		add(flowUnitLbl);
 		

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.channels.InterruptedByTimeoutException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MassFlowController {
 	// all flow transfer to CC to acount
@@ -14,13 +16,13 @@ public class MassFlowController {
 	double rangeFlowCC;
 	double targetFlowCC;
 	double targetVoltage;
-	HashMap<Double, Double> flowTable;
+	Map<Double, Double> flowTable;
 	int controlChannel;       //控制訊號channel
 	int returnSigChannel;     //回授流量訊號channel
 
 	// double[][] flowTable = new double[2][20];
 	public MassFlowController(double rangeVoltage, double rangeFlowCC, int controlChannel,int returnSigChannel,
-			HashMap<Double, Double> flowTable) {
+			Map<Double, Double> flowTable) {
 		this.rangeVoltage = rangeVoltage;
 		this.rangeFlowCC = rangeFlowCC;
 		this.controlChannel = controlChannel;
@@ -33,7 +35,7 @@ public class MassFlowController {
 		this.rangeFlowCC = rangeFlowCC;
 		this.controlChannel = controlChannel;
 		this.returnSigChannel = returnSigChannel;
-		flowTable = new HashMap<Double, Double>();
+		flowTable = new TreeMap<Double, Double>();
 
 		getNewFlowTable();
 	}

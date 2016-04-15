@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,7 +26,7 @@ public class GasPanel extends JPanel {
 	Double[] gasTableConc;
 	Double[] unitTable;
 	String showGasName;
-	HashMap<String,Double> gasTablePPM;
+	Map<String,Double> gasTablePPM;
 	Unit gasUnit = new Unit();
 	JButton addBtn;
 	static int gasTableNum;
@@ -131,17 +133,19 @@ public class GasPanel extends JPanel {
 				gasPanel[i].add(gasUnit[i]);
 				
 				editBtn[i] = new JButton("Edit");
-				editBtn[i].setBounds(515, 10, 59, 30);
+				editBtn[i].setFont(new Font("Myanmar Text", Font.BOLD, 14));
+				editBtn[i].setBounds(515, 10, 59, 50);
 				editBtn[i].setBackground(sys.sysEdit);
 				editBtn[i].setForeground(sys.sysWhite);
 				editBtn[i].setBorder(null);
 				editBtn[i].setActionCommand(showGasName);
 				gasPanel[i].add(editBtn[i]);				
 				delBtn[i] = new JButton("Del");
+				delBtn[i].setFont(new Font("Myanmar Text", Font.BOLD, 14));
 				delBtn[i].setBackground(sys.sysRed);
 				delBtn[i].setForeground(sys.sysWhite);
 				delBtn[i].setBorder(null);
-				delBtn[i].setBounds(593, 10, 59, 30);
+				delBtn[i].setBounds(593, 10, 59, 50);
 				delBtn[i].setActionCommand(showGasName);
 				gasPanel[i].add(delBtn[i]);
 				
@@ -182,7 +186,7 @@ public class GasPanel extends JPanel {
 			addBtn();
 		}
 		public void getGasName(){
-			gasTablePPM = new HashMap(MainFrame.cal.gasTablePPM);
+			gasTablePPM = new TreeMap(MainFrame.cal.gasTablePPM);
 			gasTableNum = MainFrame.cal.gasTablePPM.size();
 			gasTableName = new String[gasTableNum];
 			gasTableConc = new Double[gasTableNum];

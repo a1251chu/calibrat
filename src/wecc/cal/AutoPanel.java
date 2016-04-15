@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -24,7 +26,7 @@ public class AutoPanel extends JPanel {
 	int[] flowNum = new int[4];
 	String[] gasTable;
 	String[] unitTable;
-	HashMap<String, Double> gasTablePPM;
+	Map<String, Double> gasTablePPM;
 	static int gasTableNum;
 	static int showGasIndex;
 	static int unitTableNum;
@@ -45,7 +47,6 @@ public class AutoPanel extends JPanel {
 	public AutoPanel() {
 		setBackground(sys.sysGenBackground);
 		setLayout(null);
-
 		genBtn = sys.sysGenBtn;
 		genBtn.setLocation(225, 361);
 		add(genBtn);
@@ -202,7 +203,7 @@ public class AutoPanel extends JPanel {
 		add(unitDownBtn);
 
 		getUnit();
-		showUnitIndex = 0;
+		showUnitIndex = 1;
 		unitLbl.setText(unitTable[showUnitIndex]);
 		setUnitBtnListener(unitUpBtn, unitDownBtn, unitLbl);
 		JLabel lblTotalFlow = new JLabel("Total FLow");
@@ -285,7 +286,7 @@ public class AutoPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showGasIndex++;
-				if (showGasIndex > (gasTableNum - 1))
+				if (showGasIndex > (gasTableNum))
 					showGasIndex = 0;
 				gasNameLbl.setText(gasTable[showGasIndex]);
 				isChooseZero();
@@ -301,7 +302,7 @@ public class AutoPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				showGasIndex--;
 				if (showGasIndex < 0)
-					showGasIndex = gasTableNum - 1;
+					showGasIndex = gasTableNum;
 				gasNameLbl.setText(gasTable[showGasIndex]);
 				isChooseZero();
 			}
@@ -330,7 +331,7 @@ public class AutoPanel extends JPanel {
 		}
 	}
 	public void getGasName() { // 取得Gas名稱
-		gasTablePPM = new HashMap(MainFrame.cal.gasTablePPM);
+		gasTablePPM = new TreeMap(MainFrame.cal.gasTablePPM);
 		gasTableNum = MainFrame.cal.gasTablePPM.size();
 		gasTable = new String[gasTableNum+1];
 		int i = 1;

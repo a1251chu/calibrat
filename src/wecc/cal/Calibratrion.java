@@ -12,11 +12,13 @@ import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Calibratrion {
 	MassFlowController highMFC;
 	MassFlowController lowMFC;
-	HashMap<String, Double> gasTablePPM;
+	Map<String, Double> gasTablePPM;
 	double[] signal = new double[8];
 	double airVoltage;
 	double gasVoltage;
@@ -32,7 +34,7 @@ public class Calibratrion {
 	static final String HIGHMFCFILE = "MFC1.txt";
 	static final String LOWMFCFILE = "MFC2.txt";
 	private CommController commController = new CommController();
-
+	GPIOController gpioControl = new GPIOController();
 	public Calibratrion(double highRangeVoltage, double highRangeFlowCC, double lowRangeVoltage, double lowRangeFlowCC)
 			throws IOException {
 		this.highMFC = new MassFlowController(highRangeVoltage, highRangeFlowCC, 1, 0);
@@ -45,14 +47,16 @@ public class Calibratrion {
 	}
 
 	public void manualGen(double highMFCflowCC, double lowMFCflowCC) {
-		if((highMFCflowCC<500 && highMFCflowCC != 0) || highMFCflowCC>9500 || lowMFCflowCC>95.0 || (lowMFCflowCC < 10 && lowMFCflowCC != 0)){
+		if((highMFCflowCC<1000 && highMFCflowCC != 0) || highMFCflowCC>9500 || lowMFCflowCC>95.0 || (lowMFCflowCC < 10 && lowMFCflowCC != 0)){
 			status = "Flow Error";
 			error = 1; 
+			gpioControl.errorLedBlink();
 		}else{
 			airVoltage = highMFC.getVoltage(highMFCflowCC);
 			gasVoltage = lowMFC.getVoltage(lowMFCflowCC);
 			status = "Manual Gen";
 			error = 0;
+			gpioControl.errorLedOff();
 			generate();
 		}
 	}
@@ -60,7 +64,7 @@ public class Calibratrion {
 	private void getGasTable() {
 		File file = new File(CYLFILE);
 		String readLine;
-		gasTablePPM = new HashMap<String, Double>();
+		gasTablePPM = new TreeMap<String, Double>();
 		if (file.exists()) {
 			try {
 				FileReader cylFile = new FileReader(CYLFILE);
@@ -130,17 +134,29 @@ public class Calibratrion {
 		double airflow;
 		gasflow = (targetConcPPB * targetFlowCC) / targetGasConcPPB;
 		airflow = targetFlowCC - gasflow;
-		airVoltage = highMFC.getVoltage(airflow);
-		gasVoltage = lowMFC.getVoltage(gasflow);
-		if (airVoltage == -1 || gasVoltage == -1) {
+		if((airflow<1000 && airflow != 0) || airflow>9500 || gasflow>95.0 || (gasflow < 10 && gasflow != 0)){
+			airVoltage = highMFC.getVoltage(airflow);
+			gasVoltage = lowMFC.getVoltage(gasflow);
+			if (airVoltage == -1 || gasVoltage == -1) {
+				status = "Flow Error!!!";
+				highMFC.targetFlowCC = 0.0;
+				lowMFC.targetFlowCC = 0.0;
+				error = 1;
+				gpioControl.errorLedBlink();
+			} else {
+				error = 0;
+				gpioControl.errorLedOff();
+				generate();
+			}
+		}
+		else{
 			status = "Flow Error!!!";
 			highMFC.targetFlowCC = 0.0;
 			lowMFC.targetFlowCC = 0.0;
 			error = 1;
-		} else {
-			error = 0;
-			generate();
+			gpioControl.errorLedBlink();
 		}
+		
 	}
 
 	private void generate() {
@@ -208,10 +224,6 @@ public class Calibratrion {
 	};
 	
 	private void convertSignalToPar() {
-//		System.out.println(signal[highMFC.returnSigChannel]);
-//		System.out.println("returnSigChannel:"+highMFC.returnSigChannel);
-//		System.out.println(signal[highMFC.returnSigChannel] + "*" + highMFC.rangeFlowCC + "/" + highMFC.rangeVoltage);
-//		System.out.println(signal[lowMFC.returnSigChannel] + "*" + lowMFC.rangeFlowCC + "/" + lowMFC.rangeVoltage);
 		airActFlow = signal[highMFC.returnSigChannel] * ((highMFC.rangeFlowCC / highMFC.rangeVoltage) / 1000);  //caculate hich MFC flow
 		gasActFlow = signal[lowMFC.returnSigChannel] * (lowMFC.rangeFlowCC / lowMFC.rangeVoltage);    //caculate low MFC flow
 		airPressure = (signal[airPressureChannel]*50) - 5;    //caculate air pressure

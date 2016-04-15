@@ -11,6 +11,7 @@ import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -408,7 +409,8 @@ public class MainFrame extends JFrame {
 				while(true) {
 					double oldvalue = airFlowLinear.getValue();
 					double newvalue = cal.airActFlow;
-					airVoltage.setText(String.valueOf(newvalue));
+					if(newvalue>0)
+						airVoltage.setText(new DecimalFormat("#.##").format(newvalue));
 //					System.out.println(cal.airActFlow);
 					double step = 0.01;
 					if(newvalue>oldvalue){
@@ -450,12 +452,11 @@ public class MainFrame extends JFrame {
 		Thread gasFlowDetector = new Thread(){
 			@Override
 			public void run() {
-				int errorCount = 0;
 				while(true) {
 					double oldvalue = gasFlowLinear.getValue();
 					double newvalue = cal.gasActFlow;
 					if(newvalue>=0){
-						gasVoltage.setText(String.valueOf(newvalue));
+						gasVoltage.setText(new DecimalFormat("#.##").format(newvalue));
 					}
 					double step = 0.01;
 					if(newvalue>oldvalue){
